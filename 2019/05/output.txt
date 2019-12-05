@@ -1,0 +1,16 @@
+$ python3 prog.py input.txt 
+Enter a number: 1
+0
+0
+0
+0
+0
+0
+0
+0
+0
+11933517
+
+$ python3 prog.py input.txt 
+Enter a number: 5
+10428568

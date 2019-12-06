@@ -1,0 +1,11 @@
+https://www.python-course.eu/graphs_python.php
+http://benalexkeen.com/implementing-djikstras-shortest-path-algorithm-with-python/
+https://networkx.github.io
+
+import networkx as nx
+g = nx.Graph()
+g.add_edges_from([l.strip().split(')') for l in lines])
+print(len(nx.shortest_path(g, 'YOU', 'SAN')) - 3)
+
+D, P = dict([(l.split(')')[::-1]) for l in content.split()]), lambda k:{k}|P(D[k]) if k in D else {k}
+sum(len(P(k)) - 1 for k in D), len(P('YOU') ^ P('SAN')) - 2

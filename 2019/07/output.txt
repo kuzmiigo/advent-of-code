@@ -1,0 +1,6 @@
+python3 prog.py 1 input.txt
+117312 (0, 4, 1, 3, 2)
+
+python3 prog.py 2 input.txt
+1336480 (9, 6, 5, 7, 8)
+

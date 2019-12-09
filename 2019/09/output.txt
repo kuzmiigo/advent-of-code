@@ -1,0 +1,8 @@
+echo 1 | python3 prog.py input.txt | sed 's/: /:\n/'
+Enter a number:
+3380552333
+
+echo 2 | python3 prog.py input.txt | sed 's/: /:\n/'
+Enter a number:
+78831
+

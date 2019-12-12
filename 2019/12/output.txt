@@ -1,0 +1,27 @@
+$ time python3 prog.py input.txt
+1 10055
+2 374307970285176
+
+real    0m8.353s
+user    0m8.213s
+sys     0m0.061s
+
+
+
+$ time python3 prog_lists.py input.txt
+1 10055
+2 374307970285176
+
+real    0m9.457s
+user    0m9.308s
+sys     0m0.067s
+
+
+
+$ time python3 prog_lists_faster.py input.txt
+1 10055
+2 374307970285176
+
+real    0m7.437s
+user    0m7.320s
+sys     0m0.061s

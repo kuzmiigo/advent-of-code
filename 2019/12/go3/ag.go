@@ -48,22 +48,21 @@ func main() {
 }
 
 func step(positions, velocities [][]int) {
-	// Adjust velocity
 	n := len(positions[0])
-	for i := 0; i < n; i++ {
-		for j := i + 1; j < n; j++ {
-			for d := 0; d < 3; d++ {
-				gravity := sign(positions[d][j] - positions[d][i])
-				velocities[d][i] += gravity
-				velocities[d][j] -= gravity
+	for d := 0; d < 3; d++ {
+		// Adjust velocity
+		p := positions[d]
+		v := velocities[d]
+		for i := 0; i < n; i++ {
+			for j := i + 1; j < n; j++ {
+				gravity := sign(p[j] - p[i])
+				v[i] += gravity
+				v[j] -= gravity
 			}
 		}
-	}
-
-	// Apply velocity
-	for d := 0; d < 3; d++ {
+		// Apply velocity
 		for i := 0; i < n; i++ {
-			positions[d][i] += velocities[d][i]
+			p[i] += v[i]
 		}
 	}
 }

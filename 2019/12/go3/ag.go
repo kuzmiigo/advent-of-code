@@ -9,70 +9,59 @@ import (
 	"strings"
 )
 
-var (
-	numberPattern = regexp.MustCompile(`[\-\d]+`)
-)
+const dimensions = 3
 
-type moon struct {
-	coordinates []int
-	velocities  []int
-}
+var numberPattern = regexp.MustCompile(`[\-\d]+`)
 
 func main() {
-	var steps int64
-	var alignmentsFound int
-	alignments := make([]int64, 3)
-
 	positions := parseData(readFile())
 	n := len(positions[0])
 	initialPositions := duplicate(positions)
-	velocities := makeMatrix(3, n)
+	velocities := makeMatrix(dimensions, n)
 
-	for alignmentsFound < 3 {
-		steps++
-		step(positions, velocities)
+	ch := make(chan int64, dimensions)
 
-		for d := 0; d < 3; d++ {
-			if alignments[d] != 0 {
-				continue
+	for d := 0; d < dimensions; d++ {
+		go func(p, ip, v []int) {
+			for steps := int64(1); ; steps++ {
+				step(p, v)
+				if hasAlignment(p, ip, v) {
+					ch <- steps
+					return
+				}
 			}
-			if hasAlignment(d, positions, initialPositions, velocities) {
-				alignments[d] = steps
-				alignmentsFound++
-			}
-		}
+		}(positions[d], initialPositions[d], velocities[d])
 	}
 
-	stepsToReachAlignment := lcm(alignments...)
+	var stepsToReachAlignment int64 = 1
+	for d := 0; d < dimensions; d++ {
+		stepsToReachAlignment = lcm(stepsToReachAlignment, <-ch)
+	}
 	fmt.Println(stepsToReachAlignment)
 }
 
-func step(positions, velocities [][]int) {
-	n := len(positions[0])
-	for d := 0; d < 3; d++ {
-		// Adjust velocity
-		p := positions[d]
-		v := velocities[d]
-		for i := 0; i < n; i++ {
-			for j := i + 1; j < n; j++ {
-				gravity := sign(p[j] - p[i])
-				v[i] += gravity
-				v[j] -= gravity
-			}
+func step(positions, velocities []int) {
+	n := len(positions)
+	// Adjust velocity
+	for i := 0; i < n; i++ {
+		for j := i + 1; j < n; j++ {
+			gravity := sign(positions[j] - positions[i])
+			velocities[i] += gravity
+			velocities[j] -= gravity
 		}
-		// Apply velocity
-		for i := 0; i < n; i++ {
-			p[i] += v[i]
-		}
+	}
+	// Apply velocity
+	for i := 0; i < n; i++ {
+		positions[i] += velocities[i]
 	}
 }
 
-func hasAlignment(dim int, pos, initialPos, vel [][]int) bool {
-	for i, x := range initialPos[dim] {
-		if pos[dim][i] != x {
+func hasAlignment(positions, initialPositions, velocities []int) bool {
+	for i, x := range initialPositions {
+		if positions[i] != x {
 			return false
 		}
-		if vel[dim][i] != 0 {
+		if velocities[i] != 0 {
 			return false
 		}
 	}
@@ -94,11 +83,11 @@ func readFile() string {
 
 func parseData(input string) [][]int {
 	moonSpecs := strings.Split(input, "\n")
-	moons := makeMatrix(3, 0)
+	moons := makeMatrix(dimensions, 0)
 
 	for _, ms := range moonSpecs {
 		coordinates := getCoordinates(ms)
-		if len(coordinates) != 3 {
+		if len(coordinates) != dimensions {
 			continue
 		}
 		for i, c := range coordinates {
@@ -138,12 +127,12 @@ func gcd(a, b int64) int64 {
 	return a
 }
 
-func lcm(integers ...int64) int64 {
-	var result int64 = 1
-	for _, x := range integers {
-		result = result * x / gcd(result, x)
+func lcm(a, b int64) int64 {
+	m := a * b
+	if m < 0 {
+		m = -m
 	}
-	return result
+	return m / gcd(a, b)
 }
 
 func makeMatrix(m, n int) [][]int {

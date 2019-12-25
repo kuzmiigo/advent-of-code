@@ -1,0 +1,21 @@
+east
+east
+take semiconductor
+north
+north
+take antenna
+south
+west
+take food ration
+west
+west
+take monolith
+east
+east
+east
+south
+east
+south
+south
+east
+east
